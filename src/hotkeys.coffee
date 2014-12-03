@@ -32,20 +32,20 @@ class Hotkeys extends SimpleModule
     59:";", 61:"=", 186:";", 187:"=", # Firefox and Opera return 59,61 
     188:",", 190:".", 191:"/", 192:"`", 219:"[", 220:"\\", 221:"]", 222:"'"
 
-  @alias:
+  @aliases:
     "escape":"esc",
     "delete":"del",
     "return":"enter",
     "ctrl":"control",
     "space":"spacebar",
     "ins":"insert"
-  @metaKeyAlias: ["cmd", "command", "wins", "windows"]
+  @metaKeyAliases: ["cmd", "command", "wins", "windows"]
 
   @normalize: (keyid) ->
     keys = keyid.toLowerCase().replace(/\s+/gi, "").split "+"
     keyname = keys.pop()
-    keys[keys.indexOf alias] = "meta" for alias in @metaKeyAlias
-    keys.sort().push @alias[keyname] or keyname
+    keys[keys.indexOf alias] = "meta" for alias in @metaKeyAliases
+    keys.sort().push @aliases[keyname] or keyname
     keys.join "_"
 
   opts:
