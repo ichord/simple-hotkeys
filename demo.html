@@ -3,13 +3,106 @@
 <head>
     <title>Simple hotkeys Demo</title>
     <meta charset="utf-8" />
+    <style type="text/css">
+        html, body {
+            background:#F9F9F9;
+            padding: 0;
+            margin: 0;
+            font: 14px/1.6 "Lucida Grande", "Helvetica", sans-serif;
+            color: #333;
+        }
+        .wrapper {
+            max-width: 600px;
+            margin: 0 auto;
+            color: rgb(113, 113, 113);
+        }
+        .editor {
+            height: 260px;
+            width: 90%;
+            border: 1px solid #dadada;
+            border-radius: 4px;
+            padding: 5px 8px;
+            outline: 0 none;
+            margin: 10px 0;
+            background: white;
+            font-size: inherit;
+            overflow-y: scroll;
+        }
+        .editor:focus {
+            border: 1px solid rgb(6, 150, 247);
+        }
+        header {
+            margin: 50px 0;
+            text-align: center;
+        }
+        section {
+            margin: 30px 0;
+        }
+    </style>
 </head>
 
 <body>
+    <div class="wrapper">
+        <header>
+            <h1>Simple Hotkeys</h3>
+        </header>
+        <section>
+            <p>按 <strong>ctrl + m</strong> 查看使用手册</p>
+            <textarea id="editor" class="editor" autofocus></textarea>
+            <p>按 <strong>alt + F1</strong> 查看关于</p>
+        </section>
+    </div>
 
-<div class="wrapper">
-</div>
+    <script type="text/javascript" src="vendor/bower/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="vendor/bower/simple-module/lib/module.js"></script>
+    <script type="text/javascript" src="lib/hotkeys.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            var manual = [
+            "ctrl + 1 - 显示第一句诗歌。",
+            "ctrl + 2 - 显示第二句诗歌。",
+            "ctrl + 3 - 显示第三句诗歌。",
+            "ctrl + a - 现实所有诗句。",
+            "ctrl + shift + c - 清屏。",
+            "ctrl + m - 查看使用手册。",
+            "cmd + enter - 发给我。"
+            ];
+            simple.hotkeys({
+                el: document
+            }).bind("m", function(e){
+                if(!$(e.target).is('textarea, input, select, [contenteditable=""], [contenteditable=true]'))
+                    alert(manual.join("\n"));
+            }).bind("ctrl + m", function(e){
+                alert(manual.join("\n"));
+                return false;
+            }).bind("alt + f1", function(e){
+                alert("Hello! I'm a really simple hotkeys made by ichord.");
+                return false;
+            })
 
+            var poem = [
+            "Do not go gentle into that good night.",
+            "Old age should burn and rave at close of day.",
+            "Rage, rage against the diying of the light."
+            ];
+            simple.hotkeys({
+                el: "#editor"
+            }).bind("ctrl + 1", function(e) {
+                this.el.val(this.el.val() + poem[0]+"\n");
+            }).bind("ctrl + 2", function(e){
+                this.el.val(this.el.val() + poem[1] + "\n");
+            }).bind("ctrl + 3", function(e){
+                this.el.val(this.el.val() + poem[2] + "\n");
+            }).bind("ctrl + a", function(e){
+                this.el.val(this.el.val() + "\n" + poem.join("\n") + "\n")
+            }).bind("ctrl + shift + c", function(e){
+                this.el.val("");
+            }).bind("cmd + enter", function(e){
+                this.el.val(this.el.val() + "Sended! Just a joke. ;-)");
+            });
+        });
+
+</script>
 </body>
 
 </html>
