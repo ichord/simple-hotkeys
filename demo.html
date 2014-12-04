@@ -69,13 +69,13 @@
             ];
             simple.hotkeys({
                 el: document
-            }).bind("m", function(e){
+            }).add("m", function(e){
                 if(!$(e.target).is('textarea, input, select, [contenteditable=""], [contenteditable=true]'))
                     alert(manual.join("\n"));
-            }).bind("ctrl + m", function(e){
+            }).add("ctrl + m", function(e){
                 alert(manual.join("\n"));
                 return false;
-            }).bind("alt + f1", function(e){
+            }).add("alt + f1", function(e){
                 alert("Hello! I'm a really simple hotkeys made by ichord.");
                 return false;
             })
@@ -87,17 +87,17 @@
             ];
             simple.hotkeys({
                 el: "#editor"
-            }).bind("ctrl + 1", function(e) {
+            }).add("ctrl + 1", function(e) {
                 this.el.val(this.el.val() + poem[0]+"\n");
-            }).bind("ctrl + 2", function(e){
+            }).add("ctrl + 2", function(e){
                 this.el.val(this.el.val() + poem[1] + "\n");
-            }).bind("ctrl + 3", function(e){
+            }).add("ctrl + 3", function(e){
                 this.el.val(this.el.val() + poem[2] + "\n");
-            }).bind("ctrl + a", function(e){
+            }).add("ctrl + a", function(e){
                 this.el.val(this.el.val() + "\n" + poem.join("\n") + "\n")
-            }).bind("ctrl + shift + c", function(e){
+            }).add("ctrl + shift + c", function(e){
                 this.el.val("");
-            }).bind("cmd + enter", function(e){
+            }).add("cmd + enter", function(e){
                 this.el.val(this.el.val() + "Sended! Just a joke. ;-)");
             });
         });

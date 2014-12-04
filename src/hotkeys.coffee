@@ -67,11 +67,11 @@ class Hotkeys extends SimpleModule
       @handlers[keyid]?.call this, e
     .data "simpleHotkeys", @
 
-  bind: (keyid, handler) ->
+  add: (keyid, handler) ->
     @handlers[@constructor.normalize keyid] = handler
     @
 
-  unbind: (keyid) ->
+  remove: (keyid) ->
     delete @handlers[@constructor.normalize keyid]
     @
 

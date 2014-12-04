@@ -22,18 +22,18 @@
       expect(clazz.normalize("Cmd+ shift+a")).toBe("meta_shift_a");
       return expect(clazz.normalize("Windows + alt+ a")).toBe("alt_meta_a");
     });
-    it("bind a hotkey", function() {
+    it("add an hotkey", function() {
       var handler, keydownEvent;
-      hotkeys.bind("ctrl + b", handler = jasmine.createSpy('handler'));
+      hotkeys.add("ctrl + b", handler = jasmine.createSpy('handler'));
       hotkeys.el.trigger(keydownEvent = $.Event('keydown', {
         which: 66,
         ctrlKey: true
       }));
       return expect(handler).toHaveBeenCalledWith(keydownEvent);
     });
-    return it("unbind a hotkey", function() {
+    return it("remove an hotkey", function() {
       var handler, keydownEvent;
-      hotkeys.bind("ctrl + b", handler = jasmine.createSpy('handler')).unbind("ctrl + b");
+      hotkeys.add("ctrl + b", handler = jasmine.createSpy('handler')).remove("ctrl + b");
       hotkeys.el.trigger(keydownEvent = $.Event('keydown', {
         which: 66,
         ctrlKey: true

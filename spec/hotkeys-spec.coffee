@@ -25,16 +25,16 @@ describe 'Simple hotkeys', ->
     expect clazz.normalize "Windows + alt+ a"
       .toBe "alt_meta_a"
 
-  it "bind a hotkey", ->
-    hotkeys.bind "ctrl + b", handler = jasmine.createSpy 'handler'
+  it "add an hotkey", ->
+    hotkeys.add "ctrl + b", handler = jasmine.createSpy 'handler'
     hotkeys.el.trigger keydownEvent = $.Event 'keydown', which: 66, ctrlKey: true
     expect handler
       .toHaveBeenCalledWith keydownEvent
 
-  it "unbind a hotkey", ->
+  it "remove an hotkey", ->
     hotkeys
-      .bind "ctrl + b", handler = jasmine.createSpy 'handler'
-      .unbind "ctrl + b"
+      .add "ctrl + b", handler = jasmine.createSpy 'handler'
+      .remove "ctrl + b"
     hotkeys.el.trigger keydownEvent = $.Event 'keydown', which: 66, ctrlKey: true
     expect handler
       .not.toHaveBeenCalledWith keydownEvent
