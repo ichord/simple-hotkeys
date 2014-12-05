@@ -67,13 +67,13 @@ class Hotkeys extends SimpleModule
         return
       keyname = keyname.toLowerCase()
       if @_keystack.length == 0
-        modifiers = ""
-        modifiers += "alt_" if e.altKey
-        modifiers += "ctrl_" if e.ctrlKey
-        modifiers += "meta_" if e.metaKey
-        modifiers += "shift_" if e.shiftKey
-        keyname = modifiers + keyname
-        @_keystack.push keyname if handler = @_map[keyname]
+        shortcut = ""
+        shortcut += "alt_" if e.altKey
+        shortcut += "ctrl_" if e.ctrlKey
+        shortcut += "meta_" if e.metaKey
+        shortcut += "shift_" if e.shiftKey
+        shortcut += keyname
+        @_keystack.push shortcut if handler = @_map[shortcut]
       else
         @_keystack.push keyname
         handler = @_map[@_keystack[0]][@_keystack.slice(1).join "_"]
@@ -83,7 +83,7 @@ class Hotkeys extends SimpleModule
         return result
     .on "keyup.simple-hotkeys", (e) =>
       return unless keyname = @constructor.keyNameMap[e.which]
-      if ["control", "alt", "meta", "shift"].indexOf(@_normalize keyname) > -1
+      if ["control", "alt", "meta", "shift"].indexOf(keyname.toLowerCase()) > -1
         @_keystack = []
     .data "simpleHotkeys", @
 
