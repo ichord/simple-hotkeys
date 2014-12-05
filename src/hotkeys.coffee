@@ -56,6 +56,7 @@ class Hotkeys extends SimpleModule
   _init: ->
     @el = $ @opts.el
     throw Error('simple hotkeys: el option is required') if @el.length < 1
+    @handlers = {}
     @el.on "keydown.simple-hotkeys", (e) =>
       return unless keyname = @constructor.keyNameMap[e.which]
       modifiers = ""
@@ -78,6 +79,7 @@ class Hotkeys extends SimpleModule
   destroy: ->
     @el.off '.simple-hotkeys'
       .removeData 'simpleHotkeys'
+    @handlers = {}
 
 hotkeys = (opts) ->
   new Hotkeys(opts)
