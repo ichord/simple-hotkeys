@@ -1,7 +1,7 @@
 
 class Hotkeys extends SimpleModule
 
-  @keyName_map:
+  @keyNameMap:
     # Keys with words or arrows on them
     8:"Backspace", 9:"Tab", 13:"Enter", 16:"Shift", 17:"Control", 18:"Alt",
     19:"Pause", 20:"CapsLock", 27:"Esc", 32:"Spacebar", 33:"PageUp",
@@ -62,7 +62,7 @@ class Hotkeys extends SimpleModule
     throw Error('simple hotkeys: el option is required') if @el.length < 1
     @handlers = {}
     @el.on "keydown.simple-hotkeys", (e) =>
-      unless keyname = @constructor.keyName_map[e.which]
+      unless keyname = @constructor.keyNameMap[e.which]
         @_keystack = []
         return
       keyname = keyname.toLowerCase()
@@ -82,7 +82,7 @@ class Hotkeys extends SimpleModule
         @_keystack = []
         return result
     .on "keyup.simple-hotkeys", (e) =>
-      return unless keyname = @constructor.keyName_map[e.which]
+      return unless keyname = @constructor.keyNameMap[e.which]
       if ["control", "alt", "meta", "shift"].indexOf(@_normalize keyname) > -1
         @_keystack = []
     .data "simpleHotkeys", @
