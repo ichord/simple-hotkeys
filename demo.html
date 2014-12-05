@@ -67,6 +67,7 @@
             "ctrl + m - 查看使用手册。",
             "ctrl + h + 1 - Just a joke.",
             "ctrl + h + i + 3 - en....",
+            "ctrl+shift+a + b + c + d + e + f + g + h - You tell me. :-)",
             "cmd + enter - 发给我。"
             ];
             simple.hotkeys({
@@ -105,6 +106,8 @@
                 this.el.val("Headling 1.");
             }).add(["ctrl+h", "i+3"], function(e){
                 this.el.val("Headline Italic 3.");
+            }).add(["ctrl+shift+a", "b + c + d + e + f + g + h"], function(e){
+                this.el.val("You are awesome.!");
             });
         });
 
