@@ -65,6 +65,8 @@
             "ctrl + a - 现实所有诗句。",
             "ctrl + shift + c - 清屏。",
             "ctrl + m - 查看使用手册。",
+            "ctrl + h + 1 - Just a joke.",
+            "ctrl + h + i + 3 - en....",
             "cmd + enter - 发给我。"
             ];
             simple.hotkeys({
@@ -99,6 +101,10 @@
                 this.el.val("");
             }).add("cmd + enter", function(e){
                 this.el.val(this.el.val() + "Sended! Just a joke. ;-)");
+            }).add(["ctrl+h", "1"], function(e){
+                this.el.val("Headling 1.");
+            }).add(["ctrl+h", "i+3"], function(e){
+                this.el.val("Headline Italic 3.");
             });
         });
 

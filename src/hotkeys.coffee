@@ -1,12 +1,12 @@
 
 class Hotkeys extends SimpleModule
 
-  @keyNameMap:
+  @keyName_map:
     # Keys with words or arrows on them
     8:"Backspace", 9:"Tab", 13:"Enter", 16:"Shift", 17:"Control", 18:"Alt",
     19:"Pause", 20:"CapsLock", 27:"Esc", 32:"Spacebar", 33:"PageUp",
     34:"PageDown", 35:"End", 36:"Home", 37:"Left", 38:"Up", 39:"Right",
-    40:"Down", 45:"Insert", 46:"Del"
+    40:"Down", 45:"Insert", 46:"Del", 91: "Meta",
 
     # Number keys on main keyboard (not keypad)
     48:"0",49:"1",50:"2",51:"3",52:"4",53:"5",54:"6",55:"7",56:"8",57:"9",
@@ -39,10 +39,11 @@ class Hotkeys extends SimpleModule
     "ctrl":"control",
     "space":"spacebar",
     "ins":"insert"
+
   @metaKeyAliases: ["cmd", "command", "wins", "windows"]
 
-  @normalize: (keyid) ->
-    keys = keyid.toLowerCase().replace(/\s+/gi, "").split "+"
+  @normalize: (shortcut) ->
+    keys = shortcut.toLowerCase().replace(/\s+/gi, "").split "+"
     keyname = keys.pop()
     keys[keys.indexOf alias] = "meta" for alias in @metaKeyAliases
     keys.sort().push @aliases[keyname] or keyname
@@ -50,36 +51,66 @@ class Hotkeys extends SimpleModule
 
   opts:
     el: null # required
-
-  handlers: {}
+  _map: {}
+  _keystack: []
 
   _init: ->
     @el = $ @opts.el
+    # if don't init these var, they will be used as prototype variable. like this: Hotkeys._map.push 1
+    @_map = {}
+    @_keystack = []
     throw Error('simple hotkeys: el option is required') if @el.length < 1
     @handlers = {}
     @el.on "keydown.simple-hotkeys", (e) =>
-      return unless keyname = @constructor.keyNameMap[e.which]
-      modifiers = ""
-      modifiers += "alt_" if e.altKey
-      modifiers += "ctrl_" if e.ctrlKey
-      modifiers += "meta_" if e.metaKey
-      modifiers += "shift_" if e.shiftKey
-      keyid = modifiers + keyname.toLowerCase()
-      @handlers[keyid]?.call this, e
+      unless keyname = @constructor.keyName_map[e.which]
+        @_keystack = []
+        return
+      keyname = keyname.toLowerCase()
+      if @_keystack.length == 0
+        modifiers = ""
+        modifiers += "alt_" if e.altKey
+        modifiers += "ctrl_" if e.ctrlKey
+        modifiers += "meta_" if e.metaKey
+        modifiers += "shift_" if e.shiftKey
+        keyname = modifiers + keyname
+        @_keystack.push keyname if handler = @_map[keyname]
+      else
+        @_keystack.push keyname
+        handler = @_map[@_keystack[0]][@_keystack.slice(1).join "_"]
+      if $.isFunction handler
+        result = handler.call this, e 
+        @_keystack = []
+        return result
+    .on "keyup.simple-hotkeys", (e) =>
+      return unless keyname = @constructor.keyName_map[e.which]
+      if ["control", "alt", "meta", "shift"].indexOf(@_normalize keyname) > -1
+        @_keystack = []
     .data "simpleHotkeys", @
 
-  add: (keyid, handler) ->
-    @handlers[@constructor.normalize keyid] = handler
+  _normalize: (shortcut) -> @constructor.normalize shortcut
+
+  add: (shortcut, handler) ->
+    if $.isArray shortcut
+      @_map[mainKey = @_normalize shortcut[0]] ||= {}
+      @_map[mainKey][@_normalize shortcut[1]] = handler
+    else
+      @_map[@_normalize shortcut] = handler
     @
 
-  remove: (keyid) ->
-    delete @handlers[@constructor.normalize keyid]
+  remove: (shortcut) ->
+    if $.isArray(shortcut) and @_map[mainKey = @_normalize shortcut[0]]
+      delete @_map[mainKey][@_normalize shortcut[1]]
+      delete @_map[mainKey] if $.isEmptyObject @_map[mainKey]
+    else
+      delete @_map[@_normalize shortcut]
     @
 
   destroy: ->
     @el.off '.simple-hotkeys'
       .removeData 'simpleHotkeys'
-    @handlers = {}
+    @_map = {}
+    @_keystack = []
+    @
 
 hotkeys = (opts) ->
   new Hotkeys(opts)
