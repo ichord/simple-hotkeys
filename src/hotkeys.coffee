@@ -6,7 +6,7 @@ class Hotkeys extends SimpleModule
     8:"Backspace", 9:"Tab", 13:"Enter", 16:"Shift", 17:"Control", 18:"Alt",
     19:"Pause", 20:"CapsLock", 27:"Esc", 32:"Spacebar", 33:"PageUp",
     34:"PageDown", 35:"End", 36:"Home", 37:"Left", 38:"Up", 39:"Right",
-    40:"Down", 45:"Insert", 46:"Del", 91: "Meta",
+    40:"Down", 45:"Insert", 46:"Del", 91: "Meta", 93: "Meta",
 
     # Number keys on main keyboard (not keypad)
     48:"0",49:"1",50:"2",51:"3",52:"4",53:"5",54:"6",55:"7",56:"8",57:"9",
@@ -38,29 +38,27 @@ class Hotkeys extends SimpleModule
     "return":"enter",
     "ctrl":"control",
     "space":"spacebar",
-    "ins":"insert"
-
-  @metaKeyAliases: ["cmd", "command", "wins", "windows"]
+    "ins":"insert",
+    "cmd": "meta",
+    "command": "meta",
+    "wins": "meta",
+    "windows": "meta"
 
   @normalize: (shortcut) ->
     keys = shortcut.toLowerCase().replace(/\s+/gi, "").split "+"
+    keys[i] = @aliases[key] or key for key, i in keys
     keyname = keys.pop()
-    keys[keys.indexOf alias] = "meta" for alias in @metaKeyAliases
-    keys.sort().push @aliases[keyname] or keyname
+    keys.sort().push keyname
     keys.join "_"
 
   opts:
     el: null # required
-  _map: {}
-  _keystack: []
 
   _init: ->
     @el = $ @opts.el
-    # if don't init these var, they will be used as prototype variable. like this: Hotkeys._map.push 1
     @_map = {}
     @_keystack = []
     throw Error('simple hotkeys: el option is required') if @el.length < 1
-    @handlers = {}
     @el.on "keydown.simple-hotkeys", (e) =>
       unless keyname = @constructor.keyNameMap[e.which]
         @_keystack = []
@@ -69,7 +67,7 @@ class Hotkeys extends SimpleModule
       if @_keystack.length == 0
         shortcut = ""
         shortcut += "alt_" if e.altKey
-        shortcut += "ctrl_" if e.ctrlKey
+        shortcut += "control_" if e.ctrlKey
         shortcut += "meta_" if e.metaKey
         shortcut += "shift_" if e.shiftKey
         shortcut += keyname

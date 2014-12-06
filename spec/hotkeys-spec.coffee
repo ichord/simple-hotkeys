@@ -26,9 +26,9 @@ describe 'Simple hotkeys', ->
     expect clazz.normalize "SHIFT+A"
       .toBe "shift_a"
     expect clazz.normalize "ctrl  + alt+ left"
-      .toBe "alt_ctrl_left"
+      .toBe "alt_control_left"
     expect clazz.normalize "ctrl  + alt+ escape"
-      .toBe "alt_ctrl_esc"
+      .toBe "alt_control_esc"
     expect clazz.normalize "Cmd+ shift+a"
       .toBe "meta_shift_a"
     expect clazz.normalize "Windows + alt+ a"
@@ -56,9 +56,9 @@ describe 'Simple hotkeys', ->
         .add ["ctrl+h", "k+6"], handler
         .remove ["ctrl+h", "k+6"]
       expect hotkeys._map
-        .toEqual "ctrl_h": {"k_2": handler}
+        .toEqual "control_h": {"k_2": handler}
       hotkeys.remove ["ctrl+h", "k+2"]
-      expect hotkeys._map["ctrl_h"]
+      expect hotkeys._map["control_h"]
         .toBe undefined
     it "execute", ->
       hotkeys.add ["ctrl + h", "1"], handler = jasmine.createSpy 'handler'
@@ -73,4 +73,4 @@ describe 'Simple hotkeys', ->
         .add ["ctrl+h", "2"], handler
         .add ["ctrl+h", "k+ b"], handler
       expect hotkeys._map
-        .toEqual "ctrl_h": {"1": handler, "2": handler, "k_b": handler}
+        .toEqual "control_h": {"1": handler, "2": handler, "k_b": handler}

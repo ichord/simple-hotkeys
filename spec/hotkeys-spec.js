@@ -23,8 +23,8 @@
       var clazz;
       clazz = hotkeys.constructor;
       expect(clazz.normalize("SHIFT+A")).toBe("shift_a");
-      expect(clazz.normalize("ctrl  + alt+ left")).toBe("alt_ctrl_left");
-      expect(clazz.normalize("ctrl  + alt+ escape")).toBe("alt_ctrl_esc");
+      expect(clazz.normalize("ctrl  + alt+ left")).toBe("alt_control_left");
+      expect(clazz.normalize("ctrl  + alt+ escape")).toBe("alt_control_esc");
       expect(clazz.normalize("Cmd+ shift+a")).toBe("meta_shift_a");
       return expect(clazz.normalize("Windows + alt+ a")).toBe("alt_meta_a");
     });
@@ -52,12 +52,12 @@
         handler = jasmine.createSpy('handler');
         hotkeys.add(["ctrl+h", "k+2"], handler).add(["ctrl+h", "k+6"], handler).remove(["ctrl+h", "k+6"]);
         expect(hotkeys._map).toEqual({
-          "ctrl_h": {
+          "control_h": {
             "k_2": handler
           }
         });
         hotkeys.remove(["ctrl+h", "k+2"]);
-        return expect(hotkeys._map["ctrl_h"]).toBe(void 0);
+        return expect(hotkeys._map["control_h"]).toBe(void 0);
       });
       it("execute", function() {
         var handler, keydownEvent;
@@ -77,7 +77,7 @@
         handler = jasmine.createSpy('handler');
         hotkeys.add(["ctrl+h", "1"], handler).add(["ctrl+h", "2"], handler).add(["ctrl+h", "k+ b"], handler);
         return expect(hotkeys._map).toEqual({
-          "ctrl_h": {
+          "control_h": {
             "1": handler,
             "2": handler,
             "k_b": handler
