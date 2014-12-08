@@ -2,9 +2,10 @@
 describe 'Simple hotkeys', ->
 
   hotkeys = null
+  $('<div class="editor"></div>').appendTo 'body'
 
   beforeEach ->
-    hotkeys = simple.hotkeys el: document
+    hotkeys = simple.hotkeys el: '.editor'
 
   afterEach ->
     hotkeys.destroy()
@@ -16,8 +17,6 @@ describe 'Simple hotkeys', ->
     hotkeys.destroy()
     expect hotkeys._map
       .toEqual {}
-    expect hotkeys.el.data 'simpleHotkeys'
-      .toBe undefined
     expect hotkeys._keystack
       .toEqual []
 
@@ -36,7 +35,7 @@ describe 'Simple hotkeys', ->
 
   it "add an hotkey", ->
     hotkeys.add "ctrl + b", handler = jasmine.createSpy 'handler'
-    hotkeys.el.trigger keydownEvent = $.Event 'keydown', which: 66, ctrlKey: true
+    $(hotkeys.opts.el).trigger keydownEvent = $.Event 'keydown', which: 66, ctrlKey: true
     expect handler
       .toHaveBeenCalledWith keydownEvent
 
@@ -44,7 +43,7 @@ describe 'Simple hotkeys', ->
     hotkeys
       .add "ctrl + b", handler = jasmine.createSpy 'handler'
       .remove "ctrl + b"
-    hotkeys.el.trigger keydownEvent = $.Event 'keydown', which: 66, ctrlKey: true
+    $(hotkeys.opts.el).trigger keydownEvent = $.Event 'keydown', which: 66, ctrlKey: true
     expect handler
       .not.toHaveBeenCalledWith keydownEvent
 
@@ -62,8 +61,8 @@ describe 'Simple hotkeys', ->
         .toBe undefined
     it "execute", ->
       hotkeys.add ["ctrl + h", "1"], handler = jasmine.createSpy 'handler'
-      hotkeys.el.trigger keydownEvent = $.Event 'keydown', which: 72, ctrlKey: true
-      hotkeys.el.trigger keydownEvent = $.Event 'keydown', which: 49, ctrlKey: true
+      $(hotkeys.opts.el).trigger keydownEvent = $.Event 'keydown', which: 72, ctrlKey: true
+      $(hotkeys.opts.el).trigger keydownEvent = $.Event 'keydown', which: 49, ctrlKey: true
       expect handler
         .toHaveBeenCalledWith keydownEvent 
     it "add", ->
@@ -74,3 +73,14 @@ describe 'Simple hotkeys', ->
         .add ["ctrl+h", "k+ b"], handler
       expect hotkeys._map
         .toEqual "control_h": {"1": handler, "2": handler, "k_b": handler}
+
+  it "add dynamic one", ->
+    hotkeys.add "ctrl+b", handler = jasmine.createSpy 'handler'
+    editor = $('<div class="editor"></div>').appendTo 'body'
+    editor.trigger keydownEvent = $.Event 'keydown', which: 66, ctrlKey: true
+    expect handler
+      .toHaveBeenCalledWith keydownEvent
+    hotkeys.add "ctrl+h", handler = jasmine.createSpy 'handler'
+    editor.trigger keydownEvent = $.Event 'keydown', which: 72, ctrlKey: true
+    expect handler
+      .toHaveBeenCalledWith keydownEvent   

@@ -52,14 +52,12 @@ class Hotkeys extends SimpleModule
     keys.join "_"
 
   opts:
-    el: null # required
+    el: document
 
   _init: ->
-    @el = $ @opts.el
     @_map = {}
     @_keystack = []
-    throw Error('simple hotkeys: el option is required') if @el.length < 1
-    @el.on "keydown.simple-hotkeys", (e) =>
+    $(document).on "keydown.simple-hotkeys", @opts.el, (e) =>
       unless keyname = @constructor.keyNameMap[e.which]
         @_keystack = []
         return
@@ -79,11 +77,10 @@ class Hotkeys extends SimpleModule
         result = handler.call this, e 
         @_keystack = []
         return result
-    .on "keyup.simple-hotkeys", (e) =>
+    .on "keyup.simple-hotkeys", @opts.el, (e) =>
       return unless keyname = @constructor.keyNameMap[e.which]
       if ["control", "alt", "meta", "shift"].indexOf(keyname.toLowerCase()) > -1
         @_keystack = []
-    .data "simpleHotkeys", @
 
   _normalize: (shortcut) -> @constructor.normalize shortcut
 
@@ -104,8 +101,7 @@ class Hotkeys extends SimpleModule
     @
 
   destroy: ->
-    @el.off '.simple-hotkeys'
-      .removeData 'simpleHotkeys'
+    $(document).off '.simple-hotkeys'
     @_map = {}
     @_keystack = []
     @

@@ -4,6 +4,9 @@
     <title>Simple hotkeys Demo</title>
     <meta charset="utf-8" />
     <style type="text/css">
+        * {
+            box-sizing: border-box;
+        }
         html, body {
             background:#F9F9F9;
             padding: 0;
@@ -18,7 +21,7 @@
         }
         .editor {
             height: 260px;
-            width: 90%;
+            width: 100%;
             border: 1px solid #dadada;
             border-radius: 4px;
             padding: 5px 8px;
@@ -46,10 +49,11 @@
         <header>
             <h1>Simple Hotkeys</h3>
         </header>
-        <section>
-            <p>按 <strong>ctrl + m</strong> 查看使用手册</p>
-            <textarea id="editor" class="editor" autofocus></textarea>
-            <p>按 <strong>alt + F1</strong> 查看关于</p>
+        <section id="textareas">
+            <p>按 <strong>ctrl + m</strong> 查看使用手册 </p>
+            <textarea class="editor" autofocus></textarea>
+            <textarea class="editor" ></textarea>
+            <button>Add a textarea</button>
         </section>
     </div>
 
@@ -68,11 +72,10 @@
             "ctrl + h + 1 - Just a joke.",
             "ctrl + h + i + 3 - en....",
             "ctrl+shift+a + b + c + d + e + f + g + h - You tell me. :-)",
-            "cmd + enter - 发给我。"
+            "cmd + enter - 发给我。",
+            "alt + F1 - About"
             ];
-            simple.hotkeys({
-                el: document
-            }).add("m", function(e){
+            simple.hotkeys().add("m", function(e){
                 if(!$(e.target).is('textarea, input, select, [contenteditable=""], [contenteditable=true]'))
                     alert(manual.join("\n"));
             }).add("ctrl + m", function(e){
@@ -88,26 +91,33 @@
             "Old age should burn and rave at close of day.",
             "Rage, rage against the diying of the light."
             ];
-            simple.hotkeys({
-                el: "#editor"
+            hotkeys = simple.hotkeys({
+                el: '.editor'
             }).add("ctrl + 1", function(e) {
-                this.el.val(this.el.val() + poem[0]+"\n");
+                console.log(e.target)
+                $(e.target).val($(e.target).val() + poem[0]+"\n");
             }).add("ctrl + 2", function(e){
-                this.el.val(this.el.val() + poem[1] + "\n");
+                $(e.target).val($(e.target).val() + poem[1] + "\n");
             }).add("ctrl + 3", function(e){
-                this.el.val(this.el.val() + poem[2] + "\n");
+                $(e.target).val($(e.target).val() + poem[2] + "\n");
             }).add("ctrl + a", function(e){
-                this.el.val(this.el.val() + "\n" + poem.join("\n") + "\n")
+                $(e.target).val($(e.target).val() + "\n" + poem.join("\n") + "\n")
             }).add("ctrl + shift + c", function(e){
-                this.el.val("");
+                $(e.target).val("");
             }).add("cmd + enter", function(e){
-                this.el.val(this.el.val() + "Sended! Just a joke. ;-)");
+                $(e.target).val($(e.target).val() + "Sended! Just a joke. ;-)");
             }).add(["ctrl+h", "1"], function(e){
-                this.el.val("Headling 1.");
+                $(e.target).val("Headling 1.");
             }).add(["ctrl+h", "i+3"], function(e){
-                this.el.val("Headline Italic 3.");
+                $(e.target).val("Headline Italic 3.");
             }).add(["ctrl+shift+a", "b + c + d + e + f + g + h"], function(e){
-                this.el.val("You are awesome.!");
+                $(e.target).val("You are awesome.!");
+            });
+            $('button').on("click", function(e){
+                $("<textarea class='editor'></textarea>").insertBefore(this);
+                hotkeys.add("cmd + b", function(e) {
+                    alert("It's a new one");
+                })
             });
         });
 
