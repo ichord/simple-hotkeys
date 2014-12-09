@@ -1,6 +1,6 @@
 
 class Hotkeys extends SimpleModule
-
+  @count: 0
   @keyNameMap:
     # Keys with words or arrows on them
     8:"Backspace", 9:"Tab", 13:"Enter", 16:"Shift", 17:"Control", 18:"Alt",
@@ -55,9 +55,10 @@ class Hotkeys extends SimpleModule
     el: document
 
   _init: ->
+    @id = ++ @constructor.count
     @_map = {}
     @_keystack = []
-    $(document).on "keydown.simple-hotkeys", @opts.el, (e) =>
+    $(document).on "keydown.simple-hotkeys-#{@id}", @opts.el, (e) =>
       unless keyname = @constructor.keyNameMap[e.which]
         @_keystack = []
         return
@@ -77,7 +78,7 @@ class Hotkeys extends SimpleModule
         result = handler.call this, e 
         @_keystack = []
         return result
-    .on "keyup.simple-hotkeys", @opts.el, (e) =>
+    .on "keyup.simple-hotkeys-#{@id}", @opts.el, (e) =>
       return unless keyname = @constructor.keyNameMap[e.which]
       if ["control", "alt", "meta", "shift"].indexOf(keyname.toLowerCase()) > -1
         @_keystack = []
@@ -101,7 +102,7 @@ class Hotkeys extends SimpleModule
     @
 
   destroy: ->
-    $(document).off '.simple-hotkeys'
+    $(document).off ".simple-hotkeys-#{@id}"
     @_map = {}
     @_keystack = []
     @
