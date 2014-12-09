@@ -1,11 +1,11 @@
 {
   "name": "simple-hotkeys",
-  "version": "2.0.0",
+  "version": "0.1.0",
   "homepage": "https://github.com/ichord/simple-hotkeys",
   "authors": [
     "ichord <chord.luo@gmail.com>"
   ],
-  "description": "Simple hotkeys for tower.im",
+  "description": "Simple hotkeys",
   "main": "lib/hotkeys.js",
   "keywords": [],
   "license": "MIT",
