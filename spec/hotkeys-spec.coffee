@@ -84,3 +84,28 @@ describe 'Simple hotkeys', ->
     editor.trigger keydownEvent = $.Event 'keydown', which: 72, ctrlKey: true
     expect handler
       .toHaveBeenCalledWith keydownEvent   
+
+  describe '#responeTo', ->
+    it "#responeTo simple combo", ->
+      hotkeys.add "ctrl + b", () ->
+      expect hotkeys.responeTo ctrlB = $.Event 'keydown', which: 66, ctrlKey: true
+        .toBe true
+      $(hotkeys.opts.el).trigger ctrlB
+      expect hotkeys.responeTo ctrlB
+        .toBe true
+
+    it "#responeTo sequences combo", ->
+      hotkeys.add ["ctrl + h", "b"], () ->
+
+      # press h
+      expect hotkeys.responeTo ctrlH = $.Event 'keydown', which: 72, ctrlKey: true
+        .toBe true
+      $(hotkeys.opts.el).trigger ctrlH
+      $(hotkeys.opts.el).trigger $.Event 'keyup', which: 72, ctrlKey: true
+
+      # press b
+      expect hotkeys.responeTo ctrlB = $.Event 'keydown', which: 66, ctrlKey: true
+        .toBe true
+      $(hotkeys.opts.el).trigger ctrlB
+      expect hotkeys.responeTo ctrlB
+        .toBe true

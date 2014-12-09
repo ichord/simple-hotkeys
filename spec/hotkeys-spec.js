@@ -85,7 +85,7 @@
         });
       });
     });
-    return it("add dynamic one", function() {
+    it("add dynamic one", function() {
       var editor, handler, keydownEvent;
       hotkeys.add("ctrl+b", handler = jasmine.createSpy('handler'));
       editor = $('<div class="editor"></div>').appendTo('body');
@@ -100,6 +100,37 @@
         ctrlKey: true
       }));
       return expect(handler).toHaveBeenCalledWith(keydownEvent);
+    });
+    return describe('#responeTo', function() {
+      it("#responeTo simple combo", function() {
+        var ctrlB;
+        hotkeys.add("ctrl + b", function() {});
+        expect(hotkeys.responeTo(ctrlB = $.Event('keydown', {
+          which: 66,
+          ctrlKey: true
+        }))).toBe(true);
+        $(hotkeys.opts.el).trigger(ctrlB);
+        return expect(hotkeys.responeTo(ctrlB)).toBe(true);
+      });
+      return it("#responeTo sequences combo", function() {
+        var ctrlB, ctrlH;
+        hotkeys.add(["ctrl + h", "b"], function() {});
+        expect(hotkeys.responeTo(ctrlH = $.Event('keydown', {
+          which: 72,
+          ctrlKey: true
+        }))).toBe(true);
+        $(hotkeys.opts.el).trigger(ctrlH);
+        $(hotkeys.opts.el).trigger($.Event('keyup', {
+          which: 72,
+          ctrlKey: true
+        }));
+        expect(hotkeys.responeTo(ctrlB = $.Event('keydown', {
+          which: 66,
+          ctrlKey: true
+        }))).toBe(true);
+        $(hotkeys.opts.el).trigger(ctrlB);
+        return expect(hotkeys.responeTo(ctrlB)).toBe(true);
+      });
     });
   });
 

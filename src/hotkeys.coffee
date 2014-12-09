@@ -51,6 +51,16 @@ class Hotkeys extends SimpleModule
     keys.sort().push keyname
     keys.join "_"
 
+  _normalize: (shortcut) -> @constructor.normalize shortcut
+
+  @getModifiers: (e) ->
+    shortcut = ""
+    shortcut += "alt_" if e.altKey
+    shortcut += "control_" if e.ctrlKey
+    shortcut += "meta_" if e.metaKey
+    shortcut += "shift_" if e.shiftKey
+    shortcut
+
   opts:
     el: document
 
@@ -58,26 +68,23 @@ class Hotkeys extends SimpleModule
     @id = ++ @constructor.count
     @_map = {}
     @_keystack = []
+    @_handlerCalled = false
+    
     @_delegate = if typeof @opts.el is "string" then document else @opts.el
     $(@_delegate).on "keydown.simple-hotkeys-#{@id}", @opts.el, (e) =>
       unless keyname = @constructor.keyNameMap[e.which]
         @_keystack = []
         return
-      keyname = keyname.toLowerCase()
       if @_keystack.length == 0
-        shortcut = ""
-        shortcut += "alt_" if e.altKey
-        shortcut += "control_" if e.ctrlKey
-        shortcut += "meta_" if e.metaKey
-        shortcut += "shift_" if e.shiftKey
-        shortcut += keyname
+        shortcut = @constructor.getModifiers(e) + keyname.toLowerCase()
         @_keystack.push shortcut if handler = @_map[shortcut]
       else
-        @_keystack.push keyname
+        @_keystack.push keyname.toLowerCase()
         handler = @_map[@_keystack[0]][@_keystack.slice(1).join "_"]
       if $.isFunction handler
         result = handler.call this, e 
         @_keystack = []
+        @_handlerCalled = true
         result
       else if handler?
         false
@@ -85,8 +92,17 @@ class Hotkeys extends SimpleModule
       return unless keyname = @constructor.keyNameMap[e.which]
       if ["control", "alt", "meta", "shift"].indexOf(keyname.toLowerCase()) > -1
         @_keystack = []
+      @_handlerCalled = false
 
-  _normalize: (shortcut) -> @constructor.normalize shortcut
+  responeTo: (e) ->
+    # just in keydown phase.
+    if @_handlerCalled
+      true
+    else if keyname = @constructor.keyNameMap[e.which]
+      shortcut = @constructor.getModifiers(e) + keyname.toLowerCase()
+      @_keystack.length > 0 or @_map[shortcut] != undefined
+    else
+      false
 
   add: (shortcut, handler) ->
     if $.isArray shortcut
