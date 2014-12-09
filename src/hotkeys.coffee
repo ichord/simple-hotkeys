@@ -58,7 +58,8 @@ class Hotkeys extends SimpleModule
     @id = ++ @constructor.count
     @_map = {}
     @_keystack = []
-    $(document).on "keydown.simple-hotkeys-#{@id}", @opts.el, (e) =>
+    @_delegate = if typeof @opts.el is "string" then document else @opts.el
+    $(@_delegate).on "keydown.simple-hotkeys-#{@id}", @opts.el, (e) =>
       unless keyname = @constructor.keyNameMap[e.which]
         @_keystack = []
         return
@@ -102,7 +103,8 @@ class Hotkeys extends SimpleModule
     @
 
   destroy: ->
-    $(document).off ".simple-hotkeys-#{@id}"
+    $(@_delegate).off ".simple-hotkeys-#{@id}"
+    @_delegate = null
     @_map = {}
     @_keystack = []
     @

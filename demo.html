@@ -93,6 +93,9 @@
             ];
             hotkeys = simple.hotkeys({
                 el: '.editor'
+            }).add("cmd + i", function(e){
+                alert("cmd + i");
+                return false;
             }).add("ctrl + 1", function(e) {
                 console.log(e.target)
                 $(e.target).val($(e.target).val() + poem[0]+"\n");
