@@ -97,7 +97,6 @@
                 alert("cmd + i");
                 return false;
             }).add("ctrl + 1", function(e) {
-                console.log(e.target)
                 $(e.target).val($(e.target).val() + poem[0]+"\n");
             }).add("ctrl + 2", function(e){
                 $(e.target).val($(e.target).val() + poem[1] + "\n");

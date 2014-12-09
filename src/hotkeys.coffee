@@ -78,7 +78,9 @@ class Hotkeys extends SimpleModule
       if $.isFunction handler
         result = handler.call this, e 
         @_keystack = []
-        return result
+        result
+      else if handler?
+        false
     .on "keyup.simple-hotkeys-#{@id}", @opts.el, (e) =>
       return unless keyname = @constructor.keyNameMap[e.which]
       if ["control", "alt", "meta", "shift"].indexOf(keyname.toLowerCase()) > -1
