@@ -19,6 +19,8 @@
     "Gruntfile.coffee",
     "package.json",
     "README.md",
+    "circle.yml",
+    "demo.html",
     "umd.hbs"
   ],
   "dependencies": {
