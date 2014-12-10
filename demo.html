@@ -108,12 +108,6 @@
                 $(e.target).val("");
             }).add("cmd + enter", function(e){
                 $(e.target).val($(e.target).val() + "Sended! Just a joke. ;-)");
-            }).add(["ctrl+h", "1"], function(e){
-                $(e.target).val("Headling 1.");
-            }).add(["ctrl+h", "i+3"], function(e){
-                $(e.target).val("Headline Italic 3.");
-            }).add(["ctrl+shift+a", "b + c + d + e + f + g + h"], function(e){
-                $(e.target).val("You are awesome.!");
             });
             $('button').on("click", function(e){
                 $("<textarea class='editor'></textarea>").insertBefore(this);

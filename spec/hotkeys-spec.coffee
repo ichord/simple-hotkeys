@@ -17,8 +17,6 @@ describe 'Simple hotkeys', ->
     hotkeys.destroy()
     expect hotkeys._map
       .toEqual {}
-    expect hotkeys._keystack
-      .toEqual []
 
   it "normalize keyid", ->
     clazz = hotkeys.constructor
@@ -47,33 +45,6 @@ describe 'Simple hotkeys', ->
     expect handler
       .not.toHaveBeenCalledWith keydownEvent
 
-  describe "complex combination", ->
-    it "remove", ->
-      handler = jasmine.createSpy 'handler'
-      hotkeys
-        .add ["ctrl+h", "k+2"], handler
-        .add ["ctrl+h", "k+6"], handler
-        .remove ["ctrl+h", "k+6"]
-      expect hotkeys._map
-        .toEqual "control_h": {"k_2": handler}
-      hotkeys.remove ["ctrl+h", "k+2"]
-      expect hotkeys._map["control_h"]
-        .toBe undefined
-    it "execute", ->
-      hotkeys.add ["ctrl + h", "1"], handler = jasmine.createSpy 'handler'
-      $(hotkeys.opts.el).trigger keydownEvent = $.Event 'keydown', which: 72, ctrlKey: true
-      $(hotkeys.opts.el).trigger keydownEvent = $.Event 'keydown', which: 49, ctrlKey: true
-      expect handler
-        .toHaveBeenCalledWith keydownEvent 
-    it "add", ->
-      handler = jasmine.createSpy 'handler'
-      hotkeys
-        .add ["ctrl+h", "1"], handler
-        .add ["ctrl+h", "2"], handler
-        .add ["ctrl+h", "k+ b"], handler
-      expect hotkeys._map
-        .toEqual "control_h": {"1": handler, "2": handler, "k_b": handler}
-
   it "add dynamic one", ->
     hotkeys.add "ctrl+b", handler = jasmine.createSpy 'handler'
     editor = $('<div class="editor"></div>').appendTo 'body'
@@ -83,29 +54,11 @@ describe 'Simple hotkeys', ->
     hotkeys.add "ctrl+h", handler = jasmine.createSpy 'handler'
     editor.trigger keydownEvent = $.Event 'keydown', which: 72, ctrlKey: true
     expect handler
-      .toHaveBeenCalledWith keydownEvent   
+      .toHaveBeenCalledWith keydownEvent
 
-  describe '#responeTo', ->
-    it "#responeTo simple combo", ->
-      hotkeys.add "ctrl + b", () ->
-      expect hotkeys.responeTo ctrlB = $.Event 'keydown', which: 66, ctrlKey: true
-        .toBe true
-      $(hotkeys.opts.el).trigger ctrlB
-      expect hotkeys.responeTo ctrlB
-        .toBe true
-
-    it "#responeTo sequences combo", ->
-      hotkeys.add ["ctrl + h", "b"], () ->
-
-      # press h
-      expect hotkeys.responeTo ctrlH = $.Event 'keydown', which: 72, ctrlKey: true
-        .toBe true
-      $(hotkeys.opts.el).trigger ctrlH
-      $(hotkeys.opts.el).trigger $.Event 'keyup', which: 72, ctrlKey: true
-
-      # press b
-      expect hotkeys.responeTo ctrlB = $.Event 'keydown', which: 66, ctrlKey: true
-        .toBe true
-      $(hotkeys.opts.el).trigger ctrlB
-      expect hotkeys.responeTo ctrlB
-        .toBe true
+  it "respondTo", ->
+    hotkeys.add "ctrl + shift + h", () ->
+    expect hotkeys.respondTo $.Event 'keydown', which: 72, ctrlKey: true, shiftKey: true
+      .toBe true
+    expect hotkeys.respondTo "ctrl + shift + h"
+      .toBe true
